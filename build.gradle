@@ -1,0 +1,39 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.5.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+version = '1.0.0'
+group = 'com.moomoocow'
+
+repositories {
+    mavenCentral()
+    maven { 
+    	//url "https://repository.jboss.org/nexus/content/repositories/releases" 
+    	url "file:///D:/cache/repository"
+    }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("org.springframework.boot:spring-boot-starter")    
+    compile("org.postgresql:postgresql:9.4.1208")
+    compile("com.moomoocow:tws-api:1.0.0")
+    testCompile("junit:junit")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
