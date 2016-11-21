@@ -5,10 +5,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -16,10 +20,13 @@ import javax.persistence.UniqueConstraint;
  * A Position.
  */
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"date"})})
-public class Position implements Serializable {
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"instrument_id", "date"})})
+public class InstrumentPosition implements Serializable {
 
   private static final long serialVersionUID = 4630318760432404644L;
+
+  @Column(precision = 10, scale = 2)
+  private BigDecimal avgCost;
 
   private Date date;
 
@@ -27,13 +34,28 @@ public class Position implements Serializable {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  private Long total;
+  @ManyToOne(cascade = {CascadeType.ALL})
+  @JoinColumn(name = "instrument_id")
+  private Instrument instrument;
 
-  public Position() {
-    this.date = new Date();
+  private Long position;
+
+  // @Transient
+  // private Contract origContract;
+
+  // public Contract getOrigContract() {
+  // return origContract;
+  // }
+  //
+  // public void setOrigContract(Contract origContract) {
+  // this.origContract = origContract;
+  // }
+
+  public InstrumentPosition() {
+    // this.date = new Date();
   }
 
-  private Position(Builder builder) {
+  private InstrumentPosition(Builder builder) {
     this.id = builder.id;
     this.position = builder.position;
     this.avgCost = builder.avgCost;
@@ -49,7 +71,7 @@ public class Position implements Serializable {
     if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
-    final Position position = (Position) o;
+    final InstrumentPosition position = (InstrumentPosition) o;
     if (position.id == null || this.id == null) {
       return false;
     }
@@ -129,8 +151,8 @@ public class Position implements Serializable {
       return this;
     }
 
-    public Position build() {
-      return new Position(this);
+    public InstrumentPosition build() {
+      return new InstrumentPosition(this);
     }
 
     public Builder date(Date datetime) {
